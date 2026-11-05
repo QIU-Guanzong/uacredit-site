@@ -1,0 +1,20 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<section class="narrow-form">
+  <a href="/account/" class="text-link">← 返回客戶中心</a>
+  <div class="eyebrow">帳戶與資料</div>
+  <h1>刪除帳戶</h1>
+  <p>刪除後，你將無法再使用這個帳戶登入，所有裝置的原有登入亦會失效。</p>
+  <div class="account-notice notice-danger" id="delete-consequences">
+    <p>本網站會刪除這個帳戶的手機、電郵、密碼摘要、驗證狀態，以及相關驗證請求和帳戶操作紀錄。這項操作無法復原。</p>
+    <p>本預覽沒有貸款申請收件或證件上載功能，未保存貸款申請或身份證圖片。</p>
+  </div>
+  <form method="post">
+    <input type="hidden" name="csrf" value="{{ csrf() }}">
+    <label>目前密碼<input type="password" name="password" autocomplete="current-password" maxlength="128" required></label>
+    <label class="check-row"><input type="checkbox" name="confirm_delete" value="delete-account" aria-describedby="delete-consequences" required><span>我確認刪除帳戶及本網站保存的相關帳戶資料，並了解無法復原。</span></label>
+    <div class="actions"><button class="button button-danger" type="submit">確認刪除帳戶</button><a class="text-link" href="/account/">取消</a></div>
+  </form>
+  <p class="field-hint">只想瀏覽服務？<a href="/">返回網站</a>毋須登入。<a href="/account/delete-info/">查看刪除資料說明</a></p>
+</section>
+{% endblock %}

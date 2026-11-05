@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="{{ url_for('loan_applications.index') }}" class="text-link">← 返回貸款申請</a>
+<h1 class="edit-title">申請詳情</h1>
+<p>申請編號：{{ application.reference }}<br>提交時間（香港時間）：{{ hong_kong_time(application.created_at) }}</p>
+<div class="aside">
+  <h2>{{ application.name }}</h2>
+  <p>服務：{{ services[application.service] }}<br>電話：{{ application.phone }}<br>貸款金額：{% if application.amount %}HK$ {{ application.amount }}{% else %}未填寫{% endif %}</p>
+  <h3>補充資料</h3><p style="white-space: pre-wrap; overflow-wrap: anywhere">{{ application.details or '未填寫' }}</p>
+</div>
+<form method="post" action="{{ url_for('loan_applications.update', reference=application.reference) }}">
+  <input type="hidden" name="csrf" value="{{ csrf() }}"><input type="hidden" name="revision" value="{{ application.revision }}">
+  <label for="loan-status">處理狀態</label>
+  <select id="loan-status" name="status">{% for key, label in statuses.items() %}<option value="{{ key }}"{% if application.status == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+  <button class="button" type="submit">更新狀態</button>
+</form>
+{% endblock %}

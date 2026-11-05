@@ -1,0 +1,66 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="auth-layout">
+  <section class="auth-story" aria-labelledby="account-title">
+    <div class="eyebrow">UACREDIT · 客戶中心</div>
+    <h1 id="account-title">管理你的<br>環聯帳戶。</h1>
+    <p>聯絡資料、身份驗證及帳戶設定，在這裡查看和管理。</p>
+    <dl class="auth-features">
+      <div><dt><span aria-hidden="true">01</span> 聯絡資料</dt><dd>管理手機及電郵的驗證狀態</dd></div>
+      <div><dt><span aria-hidden="true">02</span> 身份驗證</dt><dd>查看香港身份證驗證的安排與進度</dd></div>
+      <div><dt><span aria-hidden="true">03</span> 帳戶設定</dt><dd>更改密碼或刪除帳戶及相關資料</dd></div>
+    </dl>
+    <div class="auth-guest"><p>了解服務，毋須先註冊。</p><a href="/" class="text-link">繼續以訪客瀏覽 <span aria-hidden="true">→</span></a></div>
+  </section>
+  <section class="auth-form-panel" aria-labelledby="auth-title">
+    <nav class="auth-tabs" aria-label="帳戶操作">
+      <a href="/account/login/" {{ 'aria-current=page' if mode=='login' else '' }}>登入</a>
+      <a href="/account/register/" {{ 'aria-current=page' if mode=='register' else '' }}>開立帳戶</a>
+    </nav>
+    <h2 id="auth-title">{{ '開立你的帳戶' if mode=='register' else '歡迎回來' }}</h2>
+    <p class="auth-description">{{ ('開通後可使用電郵或 WhatsApp 建立帳戶。' if not otp_ready else '選擇電郵或 WhatsApp 接收驗證碼。') if mode=='register' else '使用已加入帳戶的手機或電郵登入。' }}</p>
+    {% if mode=='register' and not otp_ready %}
+    <div class="account-notice registration-unavailable" role="status">
+      <h3>開戶服務尚未開通</h3>
+      <p>電郵及 WhatsApp 驗證服務準備中，暫時無法建立帳戶。你仍可瀏覽網站或聯絡我們。</p>
+      <div class="registration-options"><a class="button secondary" href="/">以訪客瀏覽 <span aria-hidden="true">→</span></a><a class="text-link" href="/contact/">聯絡環聯 <span aria-hidden="true">↗</span></a></div>
+    </div>
+    {% else %}
+    <form method="post" data-pending-label="{{ '正在發送驗證碼…' if mode=='register' else '正在登入…' }}">
+      <input type="hidden" name="csrf" value="{{ csrf() }}">
+      {% if mode=='register' %}
+      {% set selected = request.form.get('kind') if request.form.get('kind') in ['phone','email'] else ('email' if email_ready else 'phone') %}
+      {% if (selected=='email' and not email_ready) or (selected=='phone' and not whatsapp_ready) %}{% set selected = 'email' if email_ready else 'phone' %}{% endif %}
+      <fieldset class="contact-method">
+        <legend>開戶方式</legend>
+        <label><input type="radio" name="kind" value="email" {{ 'checked' if selected=='email' and email_ready else '' }} {{ 'disabled' if not email_ready else '' }}> 電郵</label>
+        <label><input type="radio" name="kind" value="phone" {{ 'checked' if selected=='phone' and whatsapp_ready else '' }} {{ 'disabled' if not whatsapp_ready else '' }}> WhatsApp</label>
+      </fieldset>
+      {% if not email_ready or not whatsapp_ready %}<p class="field-hint">{{ '電郵' if not email_ready else 'WhatsApp' }}驗證尚未開通，請選擇已開通的方式。</p>{% endif %}
+      <label id="contact-label"><span id="contact-field-label">手機號碼或電郵</span><input id="contact-input" name="contact" autocomplete="username" maxlength="254" aria-describedby="contact-hint" enterkeyhint="next" value="{{ request.form.get('contact','') }}" required></label>
+      <p id="contact-hint" class="field-hint contact-hint">請填寫電郵地址，或可接收 WhatsApp 的香港手機號碼。</p>
+      {% else %}
+      <label>手機號碼或電郵<input name="contact" autocomplete="username" maxlength="254" placeholder="香港手機或電郵地址" value="{{ request.form.get('contact','') }}" required></label>
+      {% endif %}
+      <div class="form-field">
+        <label for="password">密碼</label>
+        <div class="password-input">
+          <input id="password" type="password" name="password" autocomplete="{{ 'new-password' if mode=='register' else 'current-password' }}" {{ 'minlength=12' if mode=='register' else '' }} maxlength="128" enterkeyhint="{{ 'next' if mode=='register' else 'go' }}" {% if mode=='register' %}aria-describedby="password-hint"{% endif %} required>
+          <button type="button" data-password="password" aria-controls="password" aria-pressed="false" hidden>顯示</button>
+        </div>
+      </div>
+      {% if mode=='register' %}
+      <p id="password-hint" class="field-hint">使用12至128個字元，避免與其他網站共用密碼。</p>
+      <label>再次輸入密碼<input type="password" name="confirm" autocomplete="new-password" minlength="12" maxlength="128" aria-describedby="password-confirmation" enterkeyhint="done" required></label>
+      <p id="password-confirmation" class="field-feedback" data-password-confirmation role="status" aria-live="polite" aria-atomic="true"></p>
+      <label class="check-row"><input type="checkbox" name="consent" value="yes" required><span>我已閱讀並同意<a href="/account/privacy/" target="_blank" rel="noopener">客戶帳戶私隱說明</a>。</span></label>
+      {% else %}
+      <div class="login-options"><a href="/account/code-login/">驗證碼登入</a><a href="/account/forgot/">忘記密碼？</a></div>
+      {% endif %}
+      <button class="button auth-submit" type="submit" {% if mode=='register' and not otp_ready %}disabled{% endif %}>{{ '發送驗證碼' if mode=='register' else '登入' }} <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-footnote">{{ '確認驗證碼後即可建立帳戶；身份驗證可稍後完成。' if mode=='register' else '需要協助？' }}{% if mode=='login' %}<a href="/contact/">聯絡環聯</a>{% endif %}</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">環聯信貸</string>
+    <string name="title_activity_main">環聯信貸</string>
+    <string name="package_name">hk.uacredit.app</string>
+    <string name="custom_url_scheme">hk.uacredit.app</string>
+</resources>

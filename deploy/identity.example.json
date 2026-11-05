@@ -1,0 +1,20 @@
+{
+  "twilio": {
+    "enabled": false,
+    "email_enabled": false,
+    "whatsapp_enabled": false,
+    "whatsapp_no_sms_fallback_confirmed": false,
+    "account_sid": "",
+    "auth_token": "",
+    "service_sid": ""
+  },
+  "sumsub": {
+    "enabled": false,
+    "environment": "sandbox",
+    "hkid_level_confirmed": false,
+    "app_token": "",
+    "secret_key": "",
+    "webhook_secret": "",
+    "level_name": ""
+  }
+}

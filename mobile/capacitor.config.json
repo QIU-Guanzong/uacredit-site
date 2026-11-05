@@ -1,0 +1,10 @@
+{
+  "appId": "hk.uacredit.app",
+  "appName": "環聯信貸",
+  "webDir": "www",
+  "backgroundColor": "#f6f8fc",
+  "server": { "androidScheme": "https" },
+  "ios": { "contentInset": "never", "preferredContentMode": "mobile" },
+  "android": { "allowMixedContent": false, "webContentsDebuggingEnabled": false },
+  "plugins": { "CapacitorHttp": { "enabled": false } }
+}

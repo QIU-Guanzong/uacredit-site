@@ -1,0 +1,18 @@
+# Stage 1: HTTP only, installed before DNS moves. Serves the site and the ACME challenge path.
+# Requires "trusted_proxy_hops": 1 in /etc/uacredit/config.json. X-Forwarded-For is overwritten, not appended.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name uacredit.hk www.uacredit.hk;
+    client_max_body_size 2m;
+    location /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
+    location /admin { return 404; }
+    location / {
+        proxy_pass http://127.0.0.1:8744;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_read_timeout 60s;
+    }
+}

@@ -1,0 +1,38 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="eyebrow">UACREDIT · 客戶中心</div>
+<div class="account-heading">
+  <div><h1>你的客戶中心</h1><p>管理聯絡資料，確認每一步的進度。</p></div>
+  <div class="account-tools"><a class="text-link" href="/account/password/">更改密碼 <span aria-hidden="true">→</span></a><a class="text-link" href="/account/delete/">刪除帳戶 <span aria-hidden="true">→</span></a></div>
+</div>
+<div class="profile-layout">
+  <section class="contact-panel" aria-labelledby="contact-heading">
+    <h2 id="contact-heading">聯絡資料</h2>
+    <div class="contact-record"><span>香港手機</span><strong>{{ user.phone or '尚未加入' }}</strong><span class="status-tag {{ 'verified' if user.phone_verified else '' }}">{{ '已驗證' if user.phone_verified else ('待驗證' if user.phone else '未加入') }}</span></div>
+    <div class="contact-record"><span>電郵</span><strong>{{ user.email or '尚未加入' }}</strong><span class="status-tag {{ 'verified' if user.email_verified else '' }}">{{ '已驗證' if user.email_verified else ('待驗證' if user.email else '未加入') }}</span></div>
+    <details class="verification-details">
+      <summary>加入或驗證手機／電郵</summary>
+      {% if not otp_ready %}<p class="account-notice">驗證碼服務尚未開通，暫時無法發送。你仍可使用原有聯絡資料及密碼登入。</p>{% endif %}
+      <form method="post" action="/account/verify/send/">
+        <input type="hidden" name="csrf" value="{{ csrf() }}">
+        <label>驗證方式<select name="kind"><option value="email" {{ 'disabled' if not email_ready else '' }}>電郵{{ '（尚未開通）' if not email_ready else '' }}</option><option value="phone" {{ 'disabled' if not whatsapp_ready else '' }}>WhatsApp{{ '（尚未開通）' if not whatsapp_ready else '' }}</option></select></label>
+        <p class="field-hint">手機號碼須能接收 WhatsApp 訊息。</p>
+        <label>要驗證的手機或電郵<input name="contact" autocomplete="username" required></label>
+        <button class="button secondary" {{ 'disabled' if not otp_ready else '' }}>發送驗證碼 <span aria-hidden="true">→</span></button>
+      </form>
+    </details>
+  </section>
+  <section class="identity-panel" aria-labelledby="identity-heading">
+    <div class="eyebrow">身份驗證</div>
+    <h2 id="identity-heading">香港身份證驗證</h2>
+    <p class="status-tag {{ 'verified' if user.kyc_status=='verified' else '' }}">{% if user.kyc_status=='verified' %}身份已驗證{% elif user.kyc_status=='test_verified' %}測試驗證通過（非實名認證）{% elif user.kyc_status=='pending' %}驗證處理中{% elif user.kyc_status=='resubmit' %}需要補充資料{% elif user.kyc_status=='not_verified' %}驗證未通過{% else %}尚未開始{% endif %}</p>
+    <p>先驗證聯絡資料，再進行身份驗證。結果以驗證服務回覆為準。</p>
+    {% if not kyc_ready %}<p class="account-notice">身份驗證服務尚未開通。目前毋須上載身份證或自拍。</p>{% endif %}
+    <a class="text-link" href="/account/identity/">查看身份驗證安排 <span aria-hidden="true">→</span></a>
+  </section>
+</div>
+<section class="application-empty">
+  <div><div class="eyebrow">貸款服務</div><h2>貸款申請</h2><p>網上貸款申請尚未開放。如需了解貸款服務，請先聯絡環聯。</p></div>
+  <a class="button secondary" href="/contact/">查詢貸款服務 <span aria-hidden="true">↗</span></a>
+</section>
+{% endblock %}

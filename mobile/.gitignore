@@ -1,0 +1,16 @@
+node_modules/
+www/
+android/.gradle/
+android/local.properties
+android/**/build/
+ios/**/build/
+ios/**/xcuserdata/
+ios/**/.build/
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.ipa
+*.aab
+*.apk
+*.xcarchive/

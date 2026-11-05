@@ -1,0 +1,16 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<section class="narrow-form">
+  <div class="eyebrow">開立帳戶</div>
+  <h1>確認驗證碼</h1>
+  <p>請查看你的{{ 'WhatsApp 訊息' if kind=='phone' else '電郵' }}，輸入驗證碼以建立帳戶。驗證碼十分鐘內有效。</p>
+  <form method="post" data-pending-label="正在確認…">
+    <input type="hidden" name="csrf" value="{{ csrf() }}">
+    <label for="registration-code">驗證碼</label>
+    {% if error %}<p id="registration-code-error" class="code-error" role="alert">{{ error }}</p>{% endif %}
+    <input id="registration-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{4,10}" maxlength="10" {% if error %}aria-invalid="true" aria-describedby="registration-code-error"{% endif %} required>
+    <button class="button" type="submit">確認並建立帳戶 →</button>
+  </form>
+  <a href="/account/register/" class="text-link">重新開始開戶（需重新填寫資料）</a>
+</section>
+{% endblock %}

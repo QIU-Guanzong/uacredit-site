@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "build": 3,
+  "publicOrigin": "https://uacredit.hk",
+  "accountOrigin": null,
+  "publisherConfirmed": false,
+  "currentProductTermsConfirmed": false,
+  "privacyAndDeletionUrlsConfirmed": false,
+  "notice": "Account service requires an approved reachable company HTTPS endpoint. Guest content is bundled and does not require an account."
+}

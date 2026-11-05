@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="/admin/" class="text-link">← 返回網站管理</a>
+<h1 class="edit-title">貸款申請</h1>
+<p>查看客戶提交的申請並更新跟進狀態。</p>
+{% if not applications %}<div class="aside"><h2>暫時沒有申請</h2><p>客戶提交後，申請會顯示在這裡。</p></div>{% endif %}
+<div class="users-list">
+{% for item in applications %}
+<article class="user-item">
+  <div><h2><a href="{{ url_for('loan_applications.detail', reference=item.reference) }}">{{ item.name }}</a></h2>
+    <p>{{ services[item.service] }} · {{ statuses[item.status] }}<br>電話：{{ item.phone }}<br>提交時間（香港時間）：{{ hong_kong_time(item.created_at) }}<br>申請編號：{{ item.reference }}</p></div>
+  <a class="button secondary" href="{{ url_for('loan_applications.detail', reference=item.reference) }}">查看申請 →</a>
+</article>
+{% endfor %}
+</div>
+<nav class="account-tools" aria-label="申請列表分頁">
+{% if page > 1 %}<a class="text-link" href="{{ url_for('loan_applications.index', page=page-1) }}">← 上一頁</a>{% endif %}
+{% if more %}<a class="text-link" href="{{ url_for('loan_applications.index', page=page+1) }}">下一頁 →</a>{% endif %}
+</nav>
+{% endblock %}

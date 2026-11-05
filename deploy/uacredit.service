@@ -1,0 +1,27 @@
+[Unit]
+Description=UACredit independent website and content desk
+After=network.target
+
+[Service]
+Type=simple
+User=uacredit
+Group=uacredit
+WorkingDirectory=/opt/uacredit/current
+Environment=UACREDIT_DATA=/var/lib/uacredit
+Environment=UACREDIT_CONFIG=/etc/uacredit/config.json
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/uacredit/venv/bin/gunicorn --bind 127.0.0.1:8744 --workers 1 --threads 2 --timeout 60 --no-control-socket --access-logfile /dev/null --error-logfile - wsgi:app
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/uacredit
+UMask=0077
+MemoryMax=192M
+CPUQuota=40%
+TasksMax=32
+
+[Install]
+WantedBy=multi-user.target
