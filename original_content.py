@@ -113,7 +113,7 @@ def add_originals(pages,root,intro):
             cats=[c['name'] for c in source['categories'] if c['id'] in r['categories']]
             metadata=f'<p class="article-meta">發佈日期：'+r['date'][:10]+(' · '+' / '.join(cats) if cats else '')+'</p>' if r['type']=='posts' else ''
             side='<aside class="aside"><h2>需要查詢？</h2><p>服務詳情及現行條款，請向環聯確認。</p><a class="button" href="/contact/">聯絡環聯 ↗</a><div class="aside-links"><a href="/car-loan/">汽車貸款 →</a><a href="/property-loan/">物業貸款 →</a><a href="/all-pages/">所有網站內容 →</a></div></aside>'
-            pages[slug]=(title+'｜環聯亞洲信貸',title+'。環聯(亞洲)信貸有限公司原站資料完整遷移。',content+'<div class="split"><article>'+( '<p class="note">歷史存檔，僅供參考。頁內牌照號碼、電話、價格及優惠如與現行頁腳或聯絡頁不同，請以現行頁腳及聯絡頁為準；現行產品條款請致電環聯查詢。</p>' if r['type']=='posts' else '')+metadata+original(r)+'</article>'+side+'</div></div>')
+            pages[slug]=(title+'｜環聯亞洲信貸',title+'。環聯(亞洲)信貸有限公司原站資料完整遷移。',content+'<div class="split"><article>'+( '<p class="note">歷史存檔，僅供參考。現行條款請致電環聯查詢。</p>' if r['type']=='posts' else '')+metadata+original(r)+'</article>'+side+'</div></div>')
     def record_href(record):
         route=record['route'].strip('/')
         return '/' + (route+'/' if route else '')
