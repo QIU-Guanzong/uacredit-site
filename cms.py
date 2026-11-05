@@ -11,7 +11,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from original_content import SafeOriginal
 
 ROOT=Path(__file__).parent
-CODE_VERSION='2026.11.05.1'
+CODE_VERSION='2026.11.05.2'
 
 def create_app(data_dir=None,config=None,providers=None):
     data=Path(data_dir or os.environ.get('UACREDIT_DATA','/var/lib/uacredit'))

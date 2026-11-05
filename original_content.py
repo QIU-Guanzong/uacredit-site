@@ -113,7 +113,7 @@ def add_originals(pages,root,intro):
             cats=[c['name'] for c in source['categories'] if c['id'] in r['categories']]
             metadata=f'<p class="article-meta">發佈日期：'+r['date'][:10]+(' · '+' / '.join(cats) if cats else '')+'</p>' if r['type']=='posts' else ''
             side='<aside class="aside"><h2>需要查詢？</h2><p>服務詳情及現行條款，請向環聯確認。</p><a class="button" href="/contact/">聯絡環聯 ↗</a><div class="aside-links"><a href="/car-loan/">汽車貸款 →</a><a href="/property-loan/">物業貸款 →</a><a href="/all-pages/">所有網站內容 →</a></div></aside>'
-            pages[slug]=(title+'｜環聯亞洲信貸',title+'。環聯（亞洲）信貸有限公司原站資料完整遷移。',content+'<div class="split"><article>'+metadata+original(r)+'</article>'+side+'</div></div>')
+            pages[slug]=(title+'｜環聯亞洲信貸',title+'。環聯(亞洲)信貸有限公司原站資料完整遷移。',content+'<div class="split"><article>'+( '<p class="note">歷史存檔，僅供參考。頁內牌照號碼、電話、價格及優惠如與現行頁腳或聯絡頁不同，請以現行頁腳及聯絡頁為準；現行產品條款請致電環聯查詢。</p>' if r['type']=='posts' else '')+metadata+original(r)+'</article>'+side+'</div></div>')
     def record_href(record):
         route=record['route'].strip('/')
         return '/' + (route+'/' if route else '')
@@ -122,8 +122,8 @@ def add_originals(pages,root,intro):
         return '<div class="editorial-list">'+''.join(f'<a href="{record_href(r)}"><span class="list-date">{r["date"][:10]}</span><span>{escape(unescape(r["title"]["rendered"]))}</span><span aria-hidden="true">↗</span></a>' for r in items)+'</div>'
     for c in source['categories']:
         slug='category/'+c['slug'];items=[r for r in records if c['id'] in r['categories']]
-        pages[slug]=(c['name']+'｜環聯亞洲信貸',c['name']+'：環聯內容。',intro('分類',c['name'],'')+list_items(items)+'</div>')
+        pages[slug]=(c['name']+'｜環聯亞洲信貸',c['name']+'：環聯內容。',intro('分類',c['name'],'以下為歷史存檔，僅供參考；現行優惠及條款請致電環聯查詢。')+list_items(items)+'</div>')
     category_links='<div class="category-tabs">'+''.join(f'<a href="/category/{c["slug"]}/">{c["name"]} <span>{c["count"]}</span></a>' for c in source['categories'])+'</div>'
-    pages['updates']=('消息與優惠｜環聯亞洲信貸','公司動態、醒目貼士、公司優惠、商戶優惠及合作商戶。',intro('消息與優惠','消息、優惠與合作商戶','查看消息、優惠及合作商戶資料。')+search+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
-    pages['all-pages']=('網站內容一覽｜環聯亞洲信貸','環聯網站全部頁面、服務、申請資料、合作商戶及消息分類。',intro('網站資料','網站內容一覽','查看服務、公司資料、消息及合作商戶。')+search+'<h2>服務與公司資料</h2>'+list_items([r for r in records if r['type']=='pages'])+'<h2 class="directory-heading">消息與商戶</h2>'+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
+    pages['updates']=('消息與優惠｜環聯亞洲信貸','公司動態、醒目貼士、公司優惠、商戶優惠及合作商戶。',intro('消息與優惠','消息、優惠與合作商戶','查看消息、優惠及合作商戶資料。以下為歷史存檔，僅供參考。')+search+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
+    pages['all-pages']=('網站內容一覽｜環聯亞洲信貸','環聯網站全部頁面、服務、申請資料、合作商戶及消息分類。',intro('網站資料','網站內容一覽','查看服務、公司資料、消息及合作商戶。消息與商戶部分為歷史存檔，僅供參考。')+search+'<h2>服務與公司資料</h2>'+list_items([r for r in records if r['type']=='pages'])+'<h2 class="directory-heading">消息與商戶</h2>'+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
     return source
