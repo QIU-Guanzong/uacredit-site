@@ -95,6 +95,8 @@ class ContentDeskTest(unittest.TestCase):
         r=self.client.post('/admin/new',data={'csrf':self.csrf(),'slug':'new-company-offer'});self.assertEqual(r.status_code,302)
         self.assertEqual(self.client.get('/content/site.json').status_code,404)
         response=self.client.get('/unknown-page/');self.assertEqual(response.status_code,404);response.close()
+        for legacy in ['/news/','/news','/author/uacredit']:
+            r=self.client.get(legacy);self.assertEqual(r.status_code,301);self.assertEqual(r.headers['Location'],'/updates/');r.close()
         self.assertEqual(self.client.get('/healthz').json['site'],'uacredit')
     def test_homepage_heading_remains_editable_after_visual_refresh(self):
         self.login();record=next(r for r in json.loads((ROOT/'content/site.json').read_text())['records'] if r['id']==2)
