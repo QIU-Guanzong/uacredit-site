@@ -7,7 +7,7 @@ import json, re, os
 class SafeOriginal(HTMLParser):
     def __init__(self, assets, form_contact=None):
         super().__init__(convert_charrefs=True)
-        self.parts=[];self.stack=[];self.suppressed=0;self.assets=assets;self.form_contact=form_contact
+        self.parts=[];self.stack=[];self.suppressed=0;self.assets=assets;self.form_contact=form_contact;self.open_link=None
     def handle_starttag(self, tag, attrs):
         a=dict(attrs)
         if tag == 'form' and self.form_contact and not self.suppressed:
@@ -33,13 +33,17 @@ class SafeOriginal(HTMLParser):
             if href.startswith(('https://www.uacredit.hk','https://uacredit.hk','http://www.uacredit.hk','http://uacredit.hk')):
                 href=urlparse(href).path
                 if href and not href.endswith('/') and not href.split('/')[-1].count('.'):href+='/'
-            if href.startswith(('https://','http://','/','tel:','mailto:','#')) and not href.startswith(('//','/\\')):attributes.append(('href',href))
+            if href.startswith(('https://','http://','/','tel:','mailto:','#')) and not href.startswith(('//','/\\')):attributes.append(('href',href));self.open_link=href
             if href.startswith(('http://','https://')):attributes.extend([('target','_blank'),('rel','noopener noreferrer')])
         if tag=='img':
             src=a.get('src','');asset=self.assets.get(src)
             if not asset and src.startswith('/assets/') and '..' not in src:asset={'path':src}
             if not asset:return
-            attributes=[('src',asset['path']),('alt',a.get('alt') or '原站圖片'),('loading','lazy')]
+            alt=a.get('alt')
+            if not alt and self.open_link:
+                if 'wa.me' in self.open_link:alt='WhatsApp 查詢'
+                elif self.open_link.startswith('/contact'):alt='聯絡環聯'
+            attributes=[('src',asset['path']),('alt',alt or '原站圖片'),('loading','lazy')]
         if tag in {'form','fieldset'}:attributes.append(('disabled','disabled'))
         if tag in {'input','button','select','textarea'}:attributes.append(('disabled','disabled'))
         if tag=='input':
@@ -61,6 +65,7 @@ class SafeOriginal(HTMLParser):
     def handle_endtag(self,tag):
         for i in range(len(self.stack)-1,-1,-1):
             if self.stack[i][0]==tag:
+                if tag=='a':self.open_link=None
                 entries=self.stack[i:];self.stack=self.stack[:i]
                 for _,out,suppressed in reversed(entries):
                     if suppressed:self.suppressed=max(0,self.suppressed-1)
