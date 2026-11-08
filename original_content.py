@@ -105,7 +105,7 @@ def add_originals(pages,root,intro):
             if slug == 'car-loan' and r.get('source_sha256') and r['id'] not in edited_ids:
                 continue
             oldtitle,description,body=pages[slug]
-            label='查看原站主頁完整資料' if slug=='' else '查看原站完整資料'
+            label='查看完整存檔資料'
             archive='<section class="section wrap archive-section"><details><summary>'+label+'</summary>'+original(r)+'</details></section>'
             pages[slug]=(oldtitle,description,body+archive)
         else:
@@ -124,6 +124,6 @@ def add_originals(pages,root,intro):
         slug='category/'+c['slug'];items=[r for r in records if c['id'] in r['categories']]
         pages[slug]=(c['name']+'｜環聯亞洲信貸',c['name']+'：環聯內容。',intro('分類',c['name'],'以下為歷史存檔，僅供參考；現行優惠及條款請致電環聯查詢。')+list_items(items)+'</div>')
     category_links='<div class="category-tabs">'+''.join(f'<a href="/category/{c["slug"]}/">{c["name"]} <span>{c["count"]}</span></a>' for c in source['categories'])+'</div>'
-    pages['updates']=('消息與優惠｜環聯亞洲信貸','公司動態、醒目貼士、公司優惠、商戶優惠及合作商戶。',intro('消息與優惠','消息、優惠與合作商戶','查看消息、優惠及合作商戶資料。以下為歷史存檔，僅供參考。')+search+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
+    pages['updates']=('消息與優惠｜環聯亞洲信貸','公司動態、醒目貼士、公司優惠、商戶優惠及合作商戶。',intro('消息與優惠','消息、優惠與合作商戶',f'查看消息、優惠及合作商戶資料。以下為歷史存檔，僅供參考。共 {len([r for r in records if r["type"]=="posts"])} 篇，最新一篇 {max(r["date"][:10] for r in records if r["type"]=="posts")}。')+search+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
     pages['all-pages']=('網站內容一覽｜環聯亞洲信貸','環聯網站全部頁面、服務、申請資料、合作商戶及消息分類。',intro('網站資料','網站內容一覽','查看服務、公司資料、消息及合作商戶。消息與商戶部分為歷史存檔，僅供參考。')+search+'<h2>服務與公司資料</h2>'+list_items([r for r in records if r['type']=='pages'])+'<h2 class="directory-heading">消息與商戶</h2>'+category_links+list_items([r for r in records if r['type']=='posts'])+'</div>')
     return source
