@@ -11,7 +11,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from original_content import SafeOriginal
 
 ROOT=Path(__file__).parent
-CODE_VERSION='2026.11.05.2'
+CODE_VERSION='2026.11.05.3'
 
 def create_app(data_dir=None,config=None,providers=None):
     data=Path(data_dir or os.environ.get('UACREDIT_DATA','/var/lib/uacredit'))
@@ -207,6 +207,7 @@ def create_app(data_dir=None,config=None,providers=None):
     @app.get('/<path:path>')
     def public(path=''):
         if path.startswith(('admin/','content/','.')):abort(404)
+        if path.rstrip('/') in {'news','author/uacredit'}:return redirect('/updates/',code=301)
         base=(data/'current').resolve() if (data/'current').exists() else ROOT/'dist'
         if path.startswith('assets/'):return send_from_directory(ROOT/'dist',path)
         target=path if Path(path).suffix else path.rstrip('/')+'/index.html' if path else 'index.html'
